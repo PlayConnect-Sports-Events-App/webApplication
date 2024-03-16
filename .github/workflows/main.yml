@@ -17,6 +17,9 @@ jobs:
       with:
         node-version: '14'
 
+    - name: Change directory to frontend
+      run: cd frontend
+
     - name: Install Dependencies
       run: npm install
 
