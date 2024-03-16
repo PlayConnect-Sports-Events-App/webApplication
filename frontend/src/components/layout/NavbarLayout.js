@@ -1,18 +1,22 @@
 ﻿import NavbarAnonymous from "../navbar/NavbarAnonymous";
 import React from "react";
 import {Outlet} from "react-router-dom";
-import Sidebar from "../navbar/Sidebar";
+import {useAuth} from "../auth/AuthContext";
+import NavbarLoggedIn from "../navbar/NavbarLoggedIn";
 
-const Layout = () => {
+
+const NavbarLayout = () => {
+    const {authToken} = useAuth();
+    
     return (
         <>
-            <NavbarAnonymous/>
+            {authToken ? <NavbarLoggedIn/> : <NavbarAnonymous/>}
             <Outlet/>
         </>
     )
 };
 
-export default Layout;
+export default NavbarLayout;
 
 {/*<Flex>
             <Sidebar width="20%" minWidth="200px" height="100vh" position="fixed"/>

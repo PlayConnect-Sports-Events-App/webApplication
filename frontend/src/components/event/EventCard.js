@@ -1,66 +1,91 @@
 ﻿import {
-    Heading,
-    Avatar,
     Box,
     Center,
+    Heading,
     Text,
     Stack,
-    Button,
-    Link,
-    Badge,
-    useColorModeValue,
+    Image,
+    useColorModeValue, List, ListItem, ListIcon, Button,
 } from '@chakra-ui/react'
 
-export default function EventCard({ title, description, eventDate, eventTime, location }) {
+import {IconClockHour3, IconMapPin, IconYoga} from "@tabler/icons-react"
+
+
+export default function EventCard({ title, description, eventDate, eventTime, location, sportType }) {
+    // Function to format the event date
+    const formatDate = (date) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const d = new Date(date);
+        return `${d.getDate()} ${months[d.getMonth()]} '${d.getFullYear().toString().substr(-2)}`;
+    };
+
+    // Function to format the event time
+    const formatTime = (time) => {
+        const [hour, minute] = time.split(':');
+        const h = parseInt(hour, 10);
+        const m = parseInt(minute, 10);
+        const ampm = h >= 12 ? 'pm' : 'am';
+        const formattedHour = ((h + 11) % 12 + 1); // Convert 24h to 12h format
+        return `${formattedHour}:${m < 10 ? `0${m}` : m} ${ampm}`;
+    };
+    
     return (
         <Center py={6}>
             <Box
-                maxW={'320px'}
+                maxW={'445px'}
                 w={'full'}
                 bg={useColorModeValue('white', 'gray.900')}
                 boxShadow={'2xl'}
-                rounded={'lg'}
+                rounded={'md'}
+                borderRadius={'2xl'}
                 p={6}
-                textAlign={'center'}>
-                <Heading fontSize={'2xl'} fontFamily={'body'}>
-                    {title} {/* Dynamically display the event title */}
-                </Heading>
-                <Text
-                    textAlign={'center'}
-                    color={useColorModeValue('gray.700', 'gray.400')}
-                    px={3}>
-                    {description} {/* Dynamically display the event description */}
-                </Text>
-
-                <Stack align={'center'} justify={'center'} direction={'row'} mt={6}>
-                    <Badge
-                        px={2}
-                        py={1}
-                        bg={useColorModeValue('gray.50', 'gray.800')}
-                        fontWeight={'400'}>
-                        {eventDate} {/* Dynamically display the event date */}
-                    </Badge>
-                    <Badge
-                        px={2}
-                        py={1}
-                        bg={useColorModeValue('gray.50', 'gray.800')}
-                        fontWeight={'400'}>
-                        {eventTime} {/* Dynamically display the event time */}
-                    </Badge>
-                    <Badge
-                        px={2}
-                        py={1}
-                        bg={useColorModeValue('gray.50', 'gray.800')}
-                        fontWeight={'400'}>
-                        {location} {/* Dynamically display the event location */}
-                    </Badge>
+                overflow={'hidden'}>
+                <Box h={'210px'} bg={'gray.100'} mt={-6} mx={-6} mb={6} pos={'relative'}>
+                    <Image
+                        src={'https://source.unsplash.com/random?sport'}
+                        alt="Example"
+                        objectFit="cover" // This will ensure the image covers the area, but is cropped to maintain aspect ratio
+                        objectPosition="center center" // Adjust as needed to focus on a certain part of the image
+                        w="full" // Ensure the image width fills the container
+                        h="100%" // Ensure the image height fills the container
+                    />
+                </Box>
+                <Stack>
+                    <Heading
+                        // eslint-disable-next-line react-hooks/rules-of-hooks
+                        color={useColorModeValue('gray.700', 'white')}
+                        fontSize={'2xl'}
+                        fontFamily={'body'}>
+                        {title}
+                    </Heading>
+                    <Text color={'gray.500'}>
+                        {description}
+                    </Text>
                 </Stack>
-
+                <Box>
+                    <List spacing={2} marginTop={2}>
+                        <ListItem>
+                            <ListIcon as={IconClockHour3} boxSize={6} />
+                            {formatDate(eventDate)} at {formatTime(eventTime)}
+                        </ListItem>
+                        <ListItem>
+                            <ListIcon as={IconMapPin} boxSize={6}/>
+                            {location}
+                        </ListItem>
+                        <ListItem>
+                            <ListIcon as={IconYoga} boxSize={6}/>
+                            {sportType}
+                        </ListItem>
+                    </List>
+                </Box>
                 <Stack mt={8} direction={'row'} spacing={4}>
                     <Button
                         flex={1}
                         fontSize={'sm'}
                         rounded={'full'}
+                        _hover={{
+                            bg: 'gray.200',
+                        }}
                         _focus={{
                             bg: 'gray.200',
                         }}>
@@ -70,21 +95,19 @@ export default function EventCard({ title, description, eventDate, eventTime, lo
                         flex={1}
                         fontSize={'sm'}
                         rounded={'full'}
-                        bg={'blue.400'}
+                        bg={'green.400'}
                         color={'white'}
-                        boxShadow={
-                            '0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'
-                        }
                         _hover={{
-                            bg: 'blue.500',
+                            bg: 'green.500',
                         }}
                         _focus={{
-                            bg: 'blue.500',
+                            bg: 'green.500',
                         }}>
                         Join Now
                     </Button>
                 </Stack>
+                
             </Box>
         </Center>
-    );
+    )
 }

@@ -12,19 +12,21 @@
     PopoverContent,
     useColorModeValue,
     useBreakpointValue,
-    useDisclosure,
+    useDisclosure, Avatar, MenuList, Center, MenuItem, MenuDivider, Menu, MenuButton, useColorMode,
 } from '@chakra-ui/react'
 import {
     HamburgerIcon,
     CloseIcon,
     ChevronDownIcon,
-    ChevronRightIcon,
+    ChevronRightIcon, MoonIcon, SunIcon,
 } from '@chakra-ui/icons'
+import { useNavigate } from 'react-router-dom';
+import {useAuth} from "../auth/AuthContext";
 
 const NAV_ITEMS = [
     {
         label: 'Home',
-        href: '/',
+        href: '#',
     },
     {
         label: 'About Us',
@@ -36,9 +38,17 @@ const NAV_ITEMS = [
     },
 ];
 
-export default function NavbarAnonymous() {
-    const { isOpen, onToggle } = useDisclosure()
+export default function NavbarLoggedIn() {
+    const { colorMode, toggleColorMode } = useColorMode()
+    const { isOpen, onOpen, onClose, onToggle } = useDisclosure()
+    const { logout } = useAuth(); // Destructure to get logout from the auth context
+    const navigate = useNavigate();
 
+    const handleLogout = () => {
+        logout(); // Call the logout function from AuthContext
+        window.location.href="/"; // Reload the page to clear the state and redirect to the homepage
+    };
+    
     return (
         <Box>
             <Flex
@@ -80,22 +90,41 @@ export default function NavbarAnonymous() {
                     justify={'flex-end'}
                     direction={'row'}
                     spacing={6}>
-                    <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'/signin'}>
-                        Sign In
+                    <Button 
+                        bg={useColorModeValue('white', 'gray.800')}
+                        onClick={toggleColorMode}>
+                        {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
                     </Button>
-                    <Button
-                        as={'a'}
-                        display={{ base: 'none', md: 'inline-flex' }}
-                        fontSize={'sm'}
-                        fontWeight={600}
-                        color={'white'}
-                        bg={'green.400'}
-                        href={'/signup'}
-                        _hover={{
-                            bg: 'green.300',
-                        }}>
-                        Sign Up
-                    </Button>
+                    <Menu>
+                        <MenuButton
+                            as={Button}
+                            rounded={'full'}
+                            variant={'link'}
+                            cursor={'pointer'}
+                            minW={0}>
+                            <Avatar
+                                size={'sm'}
+                                src={'https://avatars.dicebear.com/api/male/username.svg'}
+                            />
+                        </MenuButton>
+                        <MenuList alignItems={'center'}>
+                            <br />
+                            <Center>
+                                <Avatar
+                                    size={'2xl'}
+                                    src={'https://avatars.dicebear.com/api/male/username.svg'}
+                                />
+                            </Center>
+                            <br />
+                            <Center>
+                                <p>Name</p>
+                            </Center>
+                            <br />
+                            <MenuDivider />
+                            <MenuItem>Account Settings</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                        </MenuList>
+                    </Menu>
                 </Stack>
             </Flex>
 

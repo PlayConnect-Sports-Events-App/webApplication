@@ -1,42 +1,34 @@
 import React from 'react';
 import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
+    ChakraProvider,
+    theme,
 } from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import NavbarAnonymous from "./components/navbar/NavbarAnonymous";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import NavbarLayout from "./components/layout/NavbarLayout";
+import HomePage from "./components/pages/HomePage";
+import SignInPage from "./components/pages/SignInPage";
+import SignUpPage from "./components/pages/SignUpPage";
+import BasicLayout from "./components/layout/BasicLayout";
 
 function App() {
-  return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
-      </Box>
-    </ChakraProvider>
-  );
+    return (
+        <ChakraProvider theme={theme}>
+            <BrowserRouter>
+                <Routes>
+                    {/* Route with Navbar */}
+                    <Route element={<NavbarLayout />}>
+                        <Route path="/" element={<HomePage />} />
+                    </Route>
+                    {/* Routes without Navbar */}
+                    <Route element={<BasicLayout />}>
+                        <Route path="signin" element={<SignInPage />} />
+                        <Route path="signup" element={<SignUpPage />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </ChakraProvider>
+);
 }
 
 export default App;
