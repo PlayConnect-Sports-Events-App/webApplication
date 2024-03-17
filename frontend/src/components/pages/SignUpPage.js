@@ -18,9 +18,38 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import axios from "axios";
+import {useAuth} from "../auth/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUpPage() {
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const {login} = useAuth(); // Use the login function from AuthContext
+    const navigate = useNavigate();
+
+    const handleInputChange = (e, setter) => setter(e.target.value);
+
+    const handleRegister = async (e) => {
+        e.preventDefault(); // Prevent form submission default behavior
+
+        // Form data to be sent
+        const userData = { firstName, lastName, email, password };
+
+        try {
+            // Using Axios to send a POST request to your registration endpoint
+            const response = await axios.post('http://localhost:8080/api/user/auth/register', userData);
+            const {token} = response.data; // Assuming the response contains the JWT token directly
+            login(token); // Update auth state with the received token
+            navigate('/'); // Redirect to homepage
+        } catch (error) {
+            // Handle error (e.g., display an error message)
+            console.error('Registration error:', error.response.data);
+        }
+    };
 
     return (
         <Flex
@@ -29,6 +58,7 @@ export default function SignUpPage() {
             justify={'center'}
             bg={useColorModeValue('gray.50', 'gray.800')}>
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+                <form onSubmit={handleRegister}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'} textAlign={'center'}>
                         Sign up
@@ -44,24 +74,24 @@ export default function SignUpPage() {
                             <Box>
                                 <FormControl id="firstName" isRequired>
                                     <FormLabel>First Name</FormLabel>
-                                    <Input type="text" />
+                                    <Input type="text" value={firstName} onChange={(e) => handleInputChange(e, setFirstName)} />
                                 </FormControl>
                             </Box>
                             <Box>
                                 <FormControl id="lastName" isRequired>
                                     <FormLabel>Last Name</FormLabel>
-                                    <Input type="text" />
+                                    <Input type="text" value={lastName} onChange={(e) => handleInputChange(e, setLastName)} />
                                 </FormControl>
                             </Box>
                         </HStack>
                         <FormControl id="email" isRequired>
                             <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
+                            <Input type="email" value={email} onChange={(e) => handleInputChange(e, setEmail)} />
                         </FormControl>
                         <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>
                             <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} />
+                                <Input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => handleInputChange(e, setPassword)} />
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
@@ -73,6 +103,7 @@ export default function SignUpPage() {
                         </FormControl>
                         <Stack spacing={10} pt={2}>
                             <Button
+                                type="submit"
                                 loadingText="Submitting"
                                 size="lg"
                                 bg={'green.400'}
@@ -90,6 +121,7 @@ export default function SignUpPage() {
                         </Stack>
                     </Stack>
                 </Box>
+                </form>
             </Stack>
         </Flex>
     )
