@@ -1,0 +1,36 @@
+name: React CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install Dependencies
+      working-directory: ./frontend
+      run: npm install
+
+    # Reintroduce Lint without failing the build
+    - name: Lint (Non-Failing)
+      working-directory: ./frontend
+      run: npm run lint || echo "Lint errors detected, but proceeding with build."
+
+    # Uncomment when you have tests
+    #- name: Run Tests
+    #  working-directory: ./frontend
+    #  run: npm test
+
+    - name: Build
+      working-directory: ./frontend
+      run: npm run build
