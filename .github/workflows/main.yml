@@ -21,11 +21,14 @@ jobs:
       working-directory: ./frontend
       run: npm install
 
-    #- name: Lint
-    #  run: npm run lint
+    # Reintroduce Lint without failing the build
+    - name: Lint (Non-Failing)
+      working-directory: ./frontend
+      run: npm run lint || echo "Lint errors detected, but proceeding with build."
 
-      # Uncomment when I have tests
+    # Uncomment when you have tests
     #- name: Run Tests
+    #  working-directory: ./frontend
     #  run: npm test
 
     - name: Build
