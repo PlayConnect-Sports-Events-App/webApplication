@@ -22,11 +22,13 @@ import {
 } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom';
 import {useAuth} from "../auth/AuthContext";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 const NAV_ITEMS = [
     {
         label: 'Home',
-        href: '#',
+        href: '/',
     },
     {
         label: 'About Us',
@@ -36,18 +38,45 @@ const NAV_ITEMS = [
         label: 'Contact Us',
         href: '#',
     },
+    {
+        label: 'My Events',
+        href: '#',
+    },
 ];
 
 export default function NavbarLoggedIn() {
     const { colorMode, toggleColorMode } = useColorMode()
     const { isOpen, onOpen, onClose, onToggle } = useDisclosure()
-    const { logout } = useAuth(); // Destructure to get logout from the auth context
+    const { logout, authToken, userEmail } = useAuth(); // Destructure to get logout from the auth context
     const navigate = useNavigate();
+    const [user, setUser] = useState(null);
 
     const handleLogout = () => {
         logout(); // Call the logout function from AuthContext
         window.location.href="/"; // Reload the page to clear the state and redirect to the homepage
     };
+
+    // Fetch user info
+    useEffect(() => {
+        if (userEmail && authToken) { // Check both userEmail and authToken are available
+            const fetchUserInfo = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
+                        headers: {
+                            Authorization: `Bearer ${authToken}` // Include the authorization header
+                        }
+                    });
+                    setUser(response.data);
+                    console.log(response.data);
+                } catch (error) {
+                    console.error("Error fetching user info:", error);
+                    // Optionally, handle error state here
+                }
+            };
+
+            fetchUserInfo();
+        }
+    }, [userEmail, authToken]);
     
     return (
         <Box>
@@ -117,11 +146,11 @@ export default function NavbarLoggedIn() {
                             </Center>
                             <br />
                             <Center>
-                                <p>Name</p>
+                                <p>{user?.firstName} {user?.lastName}</p>
                             </Center>
                             <br />
                             <MenuDivider />
-                            <MenuItem>Account Settings</MenuItem>
+                            <MenuItem onClick={() => navigate('/profile')}>Account</MenuItem>
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>
                     </Menu>

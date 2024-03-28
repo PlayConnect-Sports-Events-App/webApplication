@@ -34,6 +34,10 @@ const NAV_ITEMS = [
         label: 'Contact Us',
         href: '#',
     },
+    {
+        label: 'My Events',
+        href: '#',
+    },
 ];
 
 export default function NavbarAnonymous() {

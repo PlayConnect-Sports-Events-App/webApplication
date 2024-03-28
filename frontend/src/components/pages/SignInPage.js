@@ -1,4 +1,4 @@
-﻿import React, {useEffect, useState} from "react";
+﻿import React, {useState} from "react";
 import axios from 'axios';
 import {
     Flex,
@@ -6,7 +6,6 @@ import {
     FormControl,
     FormLabel,
     Input,
-    Checkbox,
     Stack,
     Button,
     Heading,
@@ -19,12 +18,21 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function SignInPage() {
+    
+    // Credentials
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
+    // Show or hide password
     const [showPassword, setShowPassword] = useState(false);
-    const {login} = useAuth(); // Use the login function from AuthContext
+    
+    // Use the login function from AuthContext
+    const {login} = useAuth();
+    
+    // Navigate when the user logs in
     const navigate = useNavigate();
 
+    // Function to handle login form submission
     const handleLogin = async (e) => {
         e.preventDefault(); // Prevent form submission default behavior
         try {

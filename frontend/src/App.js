@@ -10,6 +10,9 @@ import HomePage from "./components/pages/HomePage";
 import SignInPage from "./components/pages/SignInPage";
 import SignUpPage from "./components/pages/SignUpPage";
 import BasicLayout from "./components/layout/BasicLayout";
+import EventDetailsPage from "./components/pages/EventDetailsPage";
+import profilePage from "./components/pages/ProfilePage";
+import ProfilePage from "./components/pages/ProfilePage";
 
 function App() {
     return (
@@ -19,6 +22,8 @@ function App() {
                     {/* Route with Navbar */}
                     <Route element={<NavbarLayout />}>
                         <Route path="/" element={<HomePage />} />
+                        <Route path="event/:eventId" element={<EventDetailsPage />} />
+                        <Route path="profile" element={<ProfilePage/>} />
                     </Route>
                     {/* Routes without Navbar */}
                     <Route element={<BasicLayout />}>

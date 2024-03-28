@@ -9,9 +9,17 @@
 } from '@chakra-ui/react'
 
 import {IconClockHour3, IconMapPin, IconYoga} from "@tabler/icons-react"
+import { useNavigate } from 'react-router-dom';
 
 
-export default function EventCard({ title, description, eventDate, eventTime, location, sportType }) {
+export default function EventCard({ id, title, description, eventDate, eventTime, location, sportType }) {
+    const navigate = useNavigate();
+
+    // Function to navigate to the event details page and pass the event id as a parameter
+    const navigateToDetails = () => {
+        navigate(`/event/${id}`);
+    };
+    
     // Function to format the event date
     const formatDate = (date) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -42,7 +50,7 @@ export default function EventCard({ title, description, eventDate, eventTime, lo
                 overflow={'hidden'}>
                 <Box h={'210px'} bg={'gray.100'} mt={-6} mx={-6} mb={6} pos={'relative'}>
                     <Image
-                        src={'https://source.unsplash.com/random?sport'}
+                        src={`https://source.unsplash.com/random?${sportType}`}
                         alt="Example"
                         objectFit="cover" // This will ensure the image covers the area, but is cropped to maintain aspect ratio
                         objectPosition="center center" // Adjust as needed to focus on a certain part of the image
@@ -83,18 +91,6 @@ export default function EventCard({ title, description, eventDate, eventTime, lo
                         flex={1}
                         fontSize={'sm'}
                         rounded={'full'}
-                        _hover={{
-                            bg: 'gray.200',
-                        }}
-                        _focus={{
-                            bg: 'gray.200',
-                        }}>
-                        See Details
-                    </Button>
-                    <Button
-                        flex={1}
-                        fontSize={'sm'}
-                        rounded={'full'}
                         bg={'green.400'}
                         color={'white'}
                         _hover={{
@@ -102,11 +98,11 @@ export default function EventCard({ title, description, eventDate, eventTime, lo
                         }}
                         _focus={{
                             bg: 'green.500',
-                        }}>
-                        Join Now
+                        }}
+                        onClick={navigateToDetails}>
+                        See Details
                     </Button>
                 </Stack>
-                
             </Box>
         </Center>
     )
