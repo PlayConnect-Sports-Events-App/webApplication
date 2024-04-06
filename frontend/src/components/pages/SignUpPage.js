@@ -23,16 +23,24 @@ import {useAuth} from "../auth/AuthContext";
 import { useNavigate } from 'react-router-dom';
 
 export default function SignUpPage() {
+    // Show or hide password
     const [showPassword, setShowPassword] = useState(false);
+    
+    // Credentials
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
+    // Use the login function from AuthContext
     const {login} = useAuth(); // Use the login function from AuthContext
+    // Navigation
     const navigate = useNavigate();
 
+    // Function to handle input changes
     const handleInputChange = (e, setter) => setter(e.target.value);
 
+    // Function to handle registration form submission
     const handleRegister = async (e) => {
         e.preventDefault(); // Prevent form submission default behavior
 

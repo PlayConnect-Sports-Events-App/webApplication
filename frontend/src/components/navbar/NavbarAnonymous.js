@@ -27,6 +27,26 @@ const NAV_ITEMS = [
         href: '/',
     },
     {
+        label: 'Events',
+        children: [
+            {
+                label: 'Events Joined',
+                subLabel: 'Get an overview of the events you have joined.',
+                href: '/signin',
+            },
+            {
+                label: 'Events Created',
+                subLabel: 'See the vents you have created and their details.',
+                href: '/signin',
+            },
+            {
+                label: 'Create Event',
+                subLabel: 'Create a new event and invite others to join.',
+                href: '/signin',
+            },
+        ],
+    },
+    {
         label: 'About Us',
         href: '#',
     },
@@ -34,11 +54,8 @@ const NAV_ITEMS = [
         label: 'Contact Us',
         href: '#',
     },
-    {
-        label: 'My Events',
-        href: '#',
-    },
 ];
+
 
 export default function NavbarAnonymous() {
     const { isOpen, onToggle } = useDisclosure()

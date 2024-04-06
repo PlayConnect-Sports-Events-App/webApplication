@@ -12,19 +12,19 @@ import {IconClockHour3, IconMapPin, IconYoga} from "@tabler/icons-react"
 import { useNavigate } from 'react-router-dom';
 
 
-export default function EventCard({ id, title, description, eventDate, eventTime, location, sportType }) {
+export default function EventCard({ id, eventId, title, description, eventDate, eventTime, location, sportType }) {
     const navigate = useNavigate();
 
     // Function to navigate to the event details page and pass the event id as a parameter
     const navigateToDetails = () => {
-        navigate(`/event/${id}`);
+        navigate(`/event/${eventId}`);
     };
     
     // Function to format the event date
     const formatDate = (date) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const d = new Date(date);
-        return `${d.getDate()} ${months[d.getMonth()]} '${d.getFullYear().toString().substr(-2)}`;
+        return `${d.getDate()} ${months[d.getMonth()]} `;
     };
 
     // Function to format the event time
@@ -45,7 +45,7 @@ export default function EventCard({ id, title, description, eventDate, eventTime
                 bg={useColorModeValue('white', 'gray.900')}
                 boxShadow={'2xl'}
                 rounded={'md'}
-                borderRadius={'2xl'}
+                borderRadius={'xl'}
                 p={6}
                 overflow={'hidden'}>
                 <Box h={'210px'} bg={'gray.100'} mt={-6} mx={-6} mb={6} pos={'relative'}>
@@ -66,40 +66,39 @@ export default function EventCard({ id, title, description, eventDate, eventTime
                         fontFamily={'body'}>
                         {title}
                     </Heading>
-                    <Text color={'gray.500'}>
-                        {description}
-                    </Text>
                 </Stack>
                 <Box>
-                    <List spacing={2} marginTop={2}>
+                    <List spacing={2} marginTop={4}>
                         <ListItem>
-                            <ListIcon as={IconClockHour3} boxSize={6} />
+                            <ListIcon as={IconClockHour3} boxSize={6} color="green.500" />
                             {formatDate(eventDate)} at {formatTime(eventTime)}
                         </ListItem>
                         <ListItem>
-                            <ListIcon as={IconMapPin} boxSize={6}/>
+                            <ListIcon as={IconMapPin} boxSize={6} color="green.500" />
                             {location}
                         </ListItem>
                         <ListItem>
-                            <ListIcon as={IconYoga} boxSize={6}/>
+                            <ListIcon as={IconYoga} boxSize={6} color="green.500" />
                             {sportType}
                         </ListItem>
                     </List>
                 </Box>
-                <Stack mt={8} direction={'row'} spacing={4}>
+                <Stack mt={4} direction={'row'} spacing={4}>
                     <Button
-                        flex={1}
-                        fontSize={'sm'}
-                        rounded={'full'}
-                        bg={'green.400'}
-                        color={'white'}
-                        _hover={{
-                            bg: 'green.500',
-                        }}
-                        _focus={{
-                            bg: 'green.500',
-                        }}
-                        onClick={navigateToDetails}>
+                      mt={4}
+                      w={'full'}
+                      rounded={'xl'}
+                      bgGradient="linear(to-r, teal.300, green.400)"
+                      color="white"
+                      _hover={{
+                          bgGradient: "linear(to-r, teal.400, green.500)",
+                      }}
+                      _focus={{
+                          outline: "none",
+                          bgGradient: "linear(to-r, teal.400, green.500)",
+                      }}
+                      onClick={navigateToDetails}
+                    >
                         See Details
                     </Button>
                 </Stack>

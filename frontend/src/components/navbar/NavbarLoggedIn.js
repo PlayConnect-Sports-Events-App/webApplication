@@ -12,7 +12,7 @@
     PopoverContent,
     useColorModeValue,
     useBreakpointValue,
-    useDisclosure, Avatar, MenuList, Center, MenuItem, MenuDivider, Menu, MenuButton, useColorMode,
+    useDisclosure, Avatar, MenuList, Center, MenuItem, MenuDivider, Menu, MenuButton, useColorMode,Image
 } from '@chakra-ui/react'
 import {
     HamburgerIcon,
@@ -24,6 +24,8 @@ import { useNavigate } from 'react-router-dom';
 import {useAuth} from "../auth/AuthContext";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {IconLogout, IconUserCircle} from "@tabler/icons-react"
+import PlayConnect from "../../PlayConnect.png";
 
 const NAV_ITEMS = [
     {
@@ -31,15 +33,31 @@ const NAV_ITEMS = [
         href: '/',
     },
     {
+        label: 'Events',
+        children: [
+            {
+                label: 'Events Joined',
+                subLabel: 'Get an overview of the events you have joined.',
+                href: '/joined',
+            },
+            {
+                label: 'Events Created',
+                subLabel: 'See the vents you have created and their details.',
+                href: '/created',
+            },
+            {
+                label: 'Create Event',
+                subLabel: 'Create a new event and invite others to join.',
+                href: '/create',
+            },
+        ],
+    },
+    {
         label: 'About Us',
         href: '#',
     },
     {
         label: 'Contact Us',
-        href: '#',
-    },
-    {
-        label: 'My Events',
         href: '#',
     },
 ];
@@ -102,13 +120,6 @@ export default function NavbarLoggedIn() {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-                    <Text
-                        textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-                        fontFamily={'heading'}
-                        color={useColorModeValue('gray.800', 'white')}>
-                        Logo
-                    </Text>
-
                     <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
                         <DesktopNav />
                     </Flex>
@@ -133,7 +144,7 @@ export default function NavbarLoggedIn() {
                             minW={0}>
                             <Avatar
                                 size={'sm'}
-                                src={'https://avatars.dicebear.com/api/male/username.svg'}
+                                src={'https://source.unsplash.com/random?user'}
                             />
                         </MenuButton>
                         <MenuList alignItems={'center'}>
@@ -141,7 +152,7 @@ export default function NavbarLoggedIn() {
                             <Center>
                                 <Avatar
                                     size={'2xl'}
-                                    src={'https://avatars.dicebear.com/api/male/username.svg'}
+                                    src={'https://source.unsplash.com/random?user'}
                                 />
                             </Center>
                             <br />
@@ -150,8 +161,8 @@ export default function NavbarLoggedIn() {
                             </Center>
                             <br />
                             <MenuDivider />
-                            <MenuItem onClick={() => navigate('/profile')}>Account</MenuItem>
-                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                            <MenuItem icon={<IconUserCircle/>} onClick={() => navigate('/profile')}>Account</MenuItem>
+                            <MenuItem icon={<IconLogout/>} onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>
                     </Menu>
                 </Stack>
@@ -165,52 +176,57 @@ export default function NavbarLoggedIn() {
 }
 
 const DesktopNav = () => {
-    const linkColor = useColorModeValue('gray.600', 'gray.200');
-    const linkHoverColor = useColorModeValue('gray.800', 'white');
+    const linkColor = useColorModeValue('gray.600', 'white');
+    const linkHoverColor = useColorModeValue('green.500', 'green.200'); // Emphasizing green on hover
     const popoverContentBgColor = useColorModeValue('white', 'gray.800');
+    const borderColor = useColorModeValue('green.500', 'green.200'); // Green border for popover
 
     return (
-        <Stack direction={'row'} spacing={4}>
-            {NAV_ITEMS.map((navItem) => (
-                <Box key={navItem.label}>
-                    <Popover trigger={'hover'} placement={'bottom-start'}>
-                        <PopoverTrigger>
-                            <Box
-                                as="a"
-                                p={2}
-                                href={navItem.href ?? '#'}
-                                fontSize={'sm'}
-                                fontWeight={500}
-                                color={linkColor}
-                                _hover={{
-                                    textDecoration: 'none',
-                                    color: linkHoverColor,
-                                }}
-                            >
-                                {navItem.label}
-                            </Box>
-                        </PopoverTrigger>
+      <Stack direction={'row'} spacing={4} align="center">
+          {NAV_ITEMS.map((navItem) => (
+            <Box key={navItem.label}>
+                <Popover trigger={'hover'} placement={'bottom-start'}>
+                    <PopoverTrigger>
+                        <Box
+                          as="a"
+                          p={2}
+                          href={navItem.href ?? '#'}
+                          fontSize={'sm'}
+                          fontWeight={600} // Slightly bolder font for modern look
+                          color={linkColor}
+                          _hover={{
+                              textDecoration: 'none',
+                              color: linkHoverColor,
+                              transform: 'translateY(-2px)', // Subtle lift effect on hover
+                              transition: 'all .2s ease-out', // Smooth transition for hover effects
+                          }}
+                        >
+                            {navItem.label}
+                        </Box>
+                    </PopoverTrigger>
 
-                        {navItem.children && (
-                            <PopoverContent
-                                border={0}
-                                boxShadow={'xl'}
-                                bg={popoverContentBgColor}
-                                p={4}
-                                rounded={'xl'}
-                                minW={'sm'}
-                            >
-                                <Stack>
-                                    {navItem.children.map((child) => (
-                                        <DesktopSubNav key={child.label} {...child} />
-                                    ))}
-                                </Stack>
-                            </PopoverContent>
-                        )}
-                    </Popover>
-                </Box>
-            ))}
-        </Stack>
+                    {navItem.children && (
+                      <PopoverContent
+                        border={0}
+                        boxShadow={'xl'}
+                        bg={popoverContentBgColor}
+                        p={4}
+                        rounded={'xl'}
+                        minW={'sm'}
+                        borderColor={borderColor} // Adding a green-themed border
+                        borderWidth={1} // Defining border width for visibility
+                      >
+                          <Stack>
+                              {navItem.children.map((child) => (
+                                <DesktopSubNav key={child.label} {...child} />
+                              ))}
+                          </Stack>
+                      </PopoverContent>
+                    )}
+                </Popover>
+            </Box>
+          ))}
+      </Stack>
     );
 };
 
@@ -223,13 +239,13 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
             display={'block'}
             p={2}
             rounded={'md'}
-            _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}
+            _hover={{ bg: useColorModeValue('green.50', 'gray.900') }}
         >
             <Stack direction={'row'} align={'center'}>
                 <Box>
                     <Text
                         transition={'all .3s ease'}
-                        _groupHover={{ color: 'pink.400' }}
+                        _groupHover={{ color: 'green.500' }}
                         fontWeight={500}
                     >
                         {label}
@@ -245,7 +261,7 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
                     align={'center'}
                     flex={1}
                 >
-                    <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
+                    <Icon color={'green.500'} w={5} h={5} as={ChevronRightIcon} />
                 </Flex>
             </Stack>
         </Box>
