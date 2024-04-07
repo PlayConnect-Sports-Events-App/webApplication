@@ -25,7 +25,6 @@ import {useAuth} from "../auth/AuthContext";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {IconLogout, IconUserCircle} from "@tabler/icons-react"
-import PlayConnect from "../../PlayConnect.png";
 
 const NAV_ITEMS = [
     {
