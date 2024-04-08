@@ -5,11 +5,14 @@ import EventCard from '../event/EventCard';
 import SearchComponent from '../search/SearchComponent';
 import { useAuth } from '../auth/AuthContext';
 import MyEventCard from '../event/MyEventCard';
+import useUserInfo from "../hooks/UserInfoHook";
 
 const HomePage = () => {
   // User authentication and user info
   const { userEmail, authToken } = useAuth();
-  const [user, setUser] = useState(null);
+
+  // using the useUserInfo custom hook to get user info
+  const { userInfo, loading, error } = useUserInfo(userEmail, authToken);
   
   // Search events
   const [events, setEvents] = useState([]);
@@ -20,27 +23,6 @@ const HomePage = () => {
     // 'time' parameter omitted for compatibility with backend
   });
   
-  // Fetch user object from backend
-  useEffect(() => {
-    if (userEmail && authToken) { // Check both userEmail and authToken are available
-      const fetchUserInfo = async () => {
-        try {
-          const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
-            headers: {
-              Authorization: `Bearer ${authToken}`, // Include the authorization header
-            },
-          });
-          setUser(response.data);
-          console.log(response.data);
-        } catch (error) {
-          console.error('Error fetching user info:', error);
-          // Optionally, handle error state here
-        }
-      };
-      fetchUserInfo();
-    }
-  }, [userEmail, authToken]);
-
   // Fetch all events initially and on reset
   const fetchAllEvents = useCallback(async () => {
     try {
@@ -129,7 +111,7 @@ const HomePage = () => {
       <Box marginX={10}>
         <Grid templateColumns='repeat(3, 1fr)' gap={2} margin={10} w='full'>
           {events.map(event => (
-            user && event.hostUserId === user.id ?
+            userInfo && event.hostUserId === userInfo.id ?
               <MyEventCard key={event.eventId} {...event} /> :
               <EventCard key={event.eventId} {...event} />
           ))}

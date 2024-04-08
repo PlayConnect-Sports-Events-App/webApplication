@@ -3,42 +3,21 @@ import axios from 'axios';
 import { Box, Grid, Heading, Text } from '@chakra-ui/react';
 import { useAuth } from '../auth/AuthContext';
 import MyEventCard from '../event/MyEventCard';
+import useUserInfo from "../hooks/UserInfoHook";
 
 const EventsCreatedPage = () => {
   // List of events created by the user
   const [events, setEvents] = useState([]);
   
   // User info
-  const [user, setUser] = useState(null);
   const { userEmail, authToken } = useAuth();
-
-  // Fetch user object from backend
-  useEffect(() => {
-    if (userEmail && authToken) { // Check both userEmail and authToken are available
-      const fetchUserInfo = async () => {
-        try {
-          const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
-            headers: {
-              Authorization: `Bearer ${authToken}`, // Include the authorization header
-            },
-          });
-          setUser(response.data);
-          console.log(response.data);
-        } catch (error) {
-          console.error('Error fetching user info:', error);
-          // Optionally, handle error state here
-        }
-      };
-
-      fetchUserInfo();
-    }
-  }, [userEmail, authToken]);
-
+  const { userInfo, loading, error } = useUserInfo(userEmail, authToken);
+  
   // Fetch events created by the user
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/event/host/${user.id}`);
+        const response = await axios.get(`http://localhost:8080/api/event/host/${userInfo.id}`);
         setEvents(response.data);
         console.log(response.data);
       } catch (error) {
@@ -48,7 +27,7 @@ const EventsCreatedPage = () => {
     };
 
     fetchEvents();
-  }, [user]); // Empty dependency array means this effect runs once on mount
+  }, [userInfo]); // Empty dependency array means this effect runs once on mount
 
   return (
     <div>

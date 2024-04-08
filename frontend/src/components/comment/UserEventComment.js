@@ -1,8 +1,11 @@
 ﻿import React from 'react';
 import { Box, Avatar, Text, Stack, Flex, HStack } from '@chakra-ui/react';
+import { formatDistanceToNow } from 'date-fns';
 
 // UserEventComment component, used to display comments on an event
-const UserEventComment = ({ avatarUrl, firstName, commentText }) => {
+const UserEventComment = ({ avatarUrl, firstName, commentText, createdAt }) => {
+  const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true });
+  
   return (
     <Box p={5} borderBottom="1px solid" borderColor="gray.200" flex="1">
       <Stack direction="row" align="center" spacing={4}>
@@ -14,7 +17,7 @@ const UserEventComment = ({ avatarUrl, firstName, commentText }) => {
                 {firstName}
               </Text>
               <Text fontWeight="light" fontSize="xs">
-                2 hours ago
+                {timeAgo}
               </Text>
             </Flex>
           </HStack>

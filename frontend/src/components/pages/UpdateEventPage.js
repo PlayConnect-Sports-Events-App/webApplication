@@ -31,6 +31,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../auth/AuthContext';
+import useUserInfo from "../hooks/UserInfoHook";
 
 export default function UpdateEventPage() {
   const [startDate, setStartDate] = useState(new Date());
@@ -60,8 +61,8 @@ export default function UpdateEventPage() {
 
   // User authentication
   const { userEmail, authToken } = useAuth();
-  // User info
-  const [user, setUser] = useState('');
+  // using the useUserInfo custom hook to get user
+  const { userInfo, loading, error } = useUserInfo(userEmail, authToken);
 
   // Get the event ID from the URL
   let { eventId } = useParams();
@@ -84,28 +85,7 @@ export default function UpdateEventPage() {
     console.log(timeStr);
     setTimeString(timeStr);
   };
-
-  // Fetch user object from backend
-  useEffect(() => {
-    if (userEmail && authToken) { // Check both userEmail and authToken are available
-      const fetchUserInfo = async () => {
-        try {
-          const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
-            headers: {
-              Authorization: `Bearer ${authToken}`, // Include the authorization header
-            },
-          });
-          setUser(response.data);
-          console.log(response.data);
-        } catch (error) {
-          console.error('Error fetching user info:', error);
-          // Optionally, handle error state here
-        }
-      };
-      fetchUserInfo();
-    }
-  }, [userEmail, authToken]);
-
+  
   // Fetch event object from backend
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -134,7 +114,7 @@ export default function UpdateEventPage() {
     e.preventDefault(); // Prevent default form submission behavior
 
     const eventData = {
-      hostUserId: user.id,
+      hostUserId: userInfo.id,
       title,
       description,
       sportType,

@@ -21,6 +21,7 @@ import ParticipantList from '../participants/ParticipantsList';
 import CommentList from '../comment/CommentList';
 import EventDetails from '../event/EventDetails';
 import { useToast } from '@chakra-ui/react';
+import useUserInfo from '../hooks/UserInfoHook';
 
 export default function EventDetailsPage() {
   // User authentication
@@ -30,9 +31,12 @@ export default function EventDetailsPage() {
   const toast = useToast();
 
   // User info
-  const [userInfo, setUserInfo] = useState(null);
+  //const [userInfo, setUserInfo] = useState(null);
   const [isUserParticipant, setIsUserParticipant] = useState(false);
 
+  // using the useUserInfo custom hook
+  const { userInfo, loading, error } = useUserInfo(userEmail, authToken);
+  
   // Color for the free spots message
   const freeSpotsColor = useColorModeValue('red.400', 'red.400');
 
@@ -42,6 +46,7 @@ export default function EventDetailsPage() {
   // Event details
   const [event, setEvent] = useState(null);
   const [participantsCount, setParticipantsCount] = useState(0);
+  const [comments, setComments] = useState([]);
   
   //Participant List - hardcoded for now
   const hardcodedParticipants = [
@@ -69,26 +74,6 @@ export default function EventDetailsPage() {
   }, []);
 
   // Fetch user object from backend
-  useEffect(() => {
-    if (userEmail && authToken) { // Check both userEmail and authToken are available
-      const fetchUserInfo = async () => {
-        try {
-          const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
-            headers: {
-              Authorization: `Bearer ${authToken}`, // Include the authorization header
-            },
-          });
-          setUserInfo(response.data);
-          console.log(response.data);
-        } catch (error) {
-          console.error('Error fetching user info:', error);
-          // Optionally, handle error state here
-        }
-      };
-
-      fetchUserInfo();
-    }
-  }, [userEmail, authToken]);
 
   // Fetch event object from backend
   useEffect(() => {
@@ -109,8 +94,19 @@ export default function EventDetailsPage() {
       }
     };
     fetchEventDetails();
+    fetchEventComments();
   }, [eventId, userInfo]); // Dependency array to re-fetch if eventId changes
-
+  
+  const fetchEventComments = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/comment/${eventId}`);
+      setComments(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching event comments:', error);
+    }
+  }
+  
   // Function to join event
   const handleJoinEvent = async () => {
     try {
@@ -231,7 +227,7 @@ export default function EventDetailsPage() {
               <ParticipantList participants={hardcodedParticipants} />
             </Box>
             <Box>
-              <CommentList comments={hardcodedComments} />
+              <CommentList comments={comments} user={userInfo} eventId={eventId} />
             </Box>
           </Stack>
           <Button

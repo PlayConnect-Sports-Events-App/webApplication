@@ -25,6 +25,7 @@ import {useAuth} from "../auth/AuthContext";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {IconLogout, IconUserCircle} from "@tabler/icons-react"
+import useUserInfo from "../hooks/UserInfoHook";
 
 const NAV_ITEMS = [
     {
@@ -66,34 +67,12 @@ export default function NavbarLoggedIn() {
     const { isOpen, onOpen, onClose, onToggle } = useDisclosure()
     const { logout, authToken, userEmail } = useAuth(); // Destructure to get logout from the auth context
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+    const { userInfo, loading, error } = useUserInfo(userEmail, authToken);
 
     const handleLogout = () => {
         logout(); // Call the logout function from AuthContext
         window.location.href="/"; // Reload the page to clear the state and redirect to the homepage
     };
-
-    // Fetch user info
-    useEffect(() => {
-        if (userEmail && authToken) { // Check both userEmail and authToken are available
-            const fetchUserInfo = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
-                        headers: {
-                            Authorization: `Bearer ${authToken}` // Include the authorization header
-                        }
-                    });
-                    setUser(response.data);
-                    console.log(response.data);
-                } catch (error) {
-                    console.error("Error fetching user info:", error);
-                    // Optionally, handle error state here
-                }
-            };
-
-            fetchUserInfo();
-        }
-    }, [userEmail, authToken]);
     
     return (
         <Box>
@@ -156,7 +135,7 @@ export default function NavbarLoggedIn() {
                             </Center>
                             <br />
                             <Center>
-                                <p>{user?.firstName} {user?.lastName}</p>
+                                <p>{userInfo?.firstName} {userInfo?.lastName}</p>
                             </Center>
                             <br />
                             <MenuDivider />
