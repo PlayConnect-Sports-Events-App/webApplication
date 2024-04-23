@@ -56,13 +56,6 @@ export default function EventDetailsPage() {
     // Add more participants as needed
   ];
   
-  // Comment List - hardcoded for now
-  const hardcodedComments = [
-    { id: '1', avatarUrl: 'https://source.unsplash.com/random?john', firstName: 'John', commentText: 'I’ll bring the ball!' },
-    { id: '2', avatarUrl: 'https://source.unsplash.com/random?jane', firstName: 'Jane', commentText: 'Can’t wait!' },
-    // Add more comments as needed
-  ];
-  
   // Function to get the number of free spots
   const getFreeSpots = () => {
     return event?.maxParticipants - participantsCount;
@@ -97,6 +90,7 @@ export default function EventDetailsPage() {
     fetchEventComments();
   }, [eventId, userInfo]); // Dependency array to re-fetch if eventId changes
   
+  // Fetch comments for the event
   const fetchEventComments = async () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/comment/${eventId}`);
@@ -244,7 +238,11 @@ export default function EventDetailsPage() {
               transform: 'translateY(2px)',
               boxShadow: 'lg',
             }}
-            onClick={isUserParticipant ? handleLeaveEvent : handleJoinEvent}
+            onClick={
+              userInfo ?
+                  (isUserParticipant ? handleLeaveEvent : handleJoinEvent) :
+                  () => window.location.href = '/signup'
+            }
           >
             {isUserParticipant ? 'Leave Event' : 'Join Event'}
           </Button>
