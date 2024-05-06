@@ -108,7 +108,11 @@ function CommentSection({comments, user, eventId}) {
         };
 
         try {
-            const response = await axios.post('http://localhost:8080/api/comment', newCommentData,{});
+            const response = await axios.post('http://localhost:8080/api/comment', newCommentData,{
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
+            });
 
             // the backend responds with the added comment, including its ID and createdAt
             const addedComment = response.data;

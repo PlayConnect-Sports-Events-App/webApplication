@@ -14,7 +14,7 @@ import {
     Heading,
     Text,
     useColorModeValue,
-    Link,
+    Link, FormErrorMessage,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
@@ -25,6 +25,9 @@ import { useNavigate } from 'react-router-dom';
 export default function SignUpPage() {
     // Show or hide password
     const [showPassword, setShowPassword] = useState(false);
+
+    // Form errors
+    const [errors, setErrors] = useState({});
     
     // Credentials
     const [firstName, setFirstName] = useState('');
@@ -53,9 +56,12 @@ export default function SignUpPage() {
             const {token} = response.data; // Assuming the response contains the JWT token directly
             login(token); // Update auth state with the received token
             navigate('/'); // Redirect to homepage
+            setErrors({}); // Clear previous errors if registration is successful
         } catch (error) {
             // Handle error (e.g., display an error message)
             console.error('Registration error:', error.response.data);
+            // Populate the errors state with the errors from the server
+            setErrors(error.response.data || {});
         }
     };
 
@@ -95,6 +101,7 @@ export default function SignUpPage() {
                         <FormControl id="email" isRequired>
                             <FormLabel>Email address</FormLabel>
                             <Input type="email" value={email} onChange={(e) => handleInputChange(e, setEmail)} />
+                            {errors.email && <FormErrorMessage>{errors.email}</FormErrorMessage>}
                         </FormControl>
                         <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>
@@ -108,6 +115,7 @@ export default function SignUpPage() {
                                     </Button>
                                 </InputRightElement>
                             </InputGroup>
+                            {errors.password && <FormErrorMessage>{errors.password}</FormErrorMessage>}
                         </FormControl>
                         <Stack spacing={10} pt={2}>
                             <Button

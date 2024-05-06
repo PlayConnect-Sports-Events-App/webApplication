@@ -10,7 +10,7 @@ import {
     Button,
     Heading,
     Text,
-    useColorModeValue, InputGroup, InputRightElement, Link,
+    useColorModeValue, InputGroup, InputRightElement, Link, FormErrorMessage,
 } from '@chakra-ui/react'
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
 import {useAuth} from "../auth/AuthContext";
@@ -25,6 +25,10 @@ export default function SignInPage() {
     
     // Show or hide password
     const [showPassword, setShowPassword] = useState(false);
+
+    // Form errors
+    const [loginError, setLoginError] = useState('');
+    const [errors, setErrors] = useState({});
     
     // Use the login function from AuthContext
     const {login} = useAuth();
@@ -41,9 +45,12 @@ export default function SignInPage() {
             const {token} = response.data; // Assuming the response contains the JWT token directly
             login(token); // Update auth state with the received token
             navigate('/'); // Redirect to homepage
+            setErrors({}); // Clear previous errors if registration is successful
         } catch (error) {
             console.error('Login error:', error.response ? error.response.data : error.message);
-            // Handle login error (e.g., show an error message)
+            // Populate the errors state with the errors from the server
+            setErrors(error.response.data || {});
+            setLoginError(error.response ? error.response.data.message : error.message);
         }
     };
 
@@ -67,6 +74,7 @@ export default function SignInPage() {
                             <FormControl id="email" isRequired>
                                 <FormLabel>Email address</FormLabel>
                                 <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                                {errors.email && <FormErrorMessage>{errors.email}</FormErrorMessage>}
                             </FormControl>
                             <FormControl id="password" isRequired>
                                 <FormLabel>Password</FormLabel>
@@ -84,6 +92,7 @@ export default function SignInPage() {
                                         </Button>
                                     </InputRightElement>
                                 </InputGroup>
+                                {errors.password && <FormErrorMessage>{errors.password}</FormErrorMessage>}
                             </FormControl>
                             <Stack spacing={10}>
                                 <Button
@@ -96,6 +105,11 @@ export default function SignInPage() {
                                     }}>
                                     Sign in
                                 </Button>
+                                {loginError && (
+                                    <Box color="red.500" textAlign="center" paddingBottom={4}>
+                                        {loginError}
+                                    </Box>
+                                )}
                             </Stack>
                             <Stack pt={6}>
                                 <Text align={'center'}>
