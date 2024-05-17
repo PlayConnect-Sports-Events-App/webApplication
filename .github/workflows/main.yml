@@ -84,6 +84,7 @@ jobs:
             --platform managed \
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
+            --update-env-vars=PORT=3000 \
             --timeout=900s
       - name: Get Service URL
         run: |
