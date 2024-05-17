@@ -1,5 +1,10 @@
 name: React CI
 
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT }} # Project ID from lachezar account
+  SERVICE: react-app # Google Cloud Run service name
+  REGION: europe-west4
+
 on:
   push:
     branches: [ "main" ]
@@ -29,46 +34,56 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-    - name: Install Dependencies
-      working-directory: ./frontend
-      run: npm install
-
-    # Reintroduce Lint without failing the build
-    - name: Lint (Non-Failing)
-      working-directory: ./frontend
-      run: npm run lint || echo "Lint errors detected, but proceeding with build."
-
-    # Uncomment when you have tests
-    #- name: Run Tests
-    #  working-directory: ./frontend
-    #  run: npm test
-
-    - name: Build
-      working-directory: ./frontend
-      run: npm run build
+      - name: Install Dependencies
+        working-directory: ./frontend
+        run: npm install
       
-  docker-publish:
+      # Reintroduce Lint without failing the build
+      - name: Lint (Non-Failing)
+        working-directory: ./frontend
+        run: npm run lint || echo "Lint errors detected, but proceeding with build."
+      
+      # Uncomment when you have tests
+      #- name: Run Tests
+      #  working-directory: ./frontend
+      #  run: npm test
+
+      - name: Build
+        working-directory: ./frontend
+        run: npm run build
+  
+  deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: luchoo/react-app:latest,luchoo/react-app:${{ github.sha }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - name: Configure Docker to use gcloud
+        run: gcloud auth configure-docker europe-west4-docker.pkg.dev
+      - name: Build and Push Container
+        run: |
+          docker build -t europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }} ./frontend
+          docker push europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }}
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE }} \
+            --image europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --timeout=900s
+      - name: Get Service URL
+        run: |
+          SERVICE_URL=$(gcloud run services describe ${{ env.SERVICE }} --region ${{ env.REGION }} --format "value(status.url)")
+          echo "Service URL: $SERVICE_URL"

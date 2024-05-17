@@ -134,14 +134,25 @@ function CommentSection({comments, user, eventId}) {
                 position: "top-right", // Position of the toast notification
             });
         } catch (error) {
-            toast({
-                title: 'Oops! Something went wrong.',
-                description: 'There was an error when adding your comment. Please try again.',
-                status: 'error',
-                duration: 3000, // Duration in milliseconds; adjust as needed
-                isClosable: true,
-                position: 'top-right', // Position of the toast notification
-            });
+            if (error.response && error.response.data && error.response.data.errorType === 'PROFANITY_ERROR') {
+                toast({
+                    title: 'Profanity Detected',
+                    description: 'Your comment contains offensive language and cannot be posted.',
+                    status: 'error',
+                    duration: 5000, // Duration in milliseconds; adjust as needed
+                    isClosable: true,
+                    position: 'top-right', // Position of the toast notification
+                });
+            } else {
+                toast({
+                    title: 'Oops! Something went wrong.',
+                    description: 'There was an error when adding your comment. Please try again.',
+                    status: 'error',
+                    duration: 3000, // Duration in milliseconds; adjust as needed
+                    isClosable: true,
+                    position: 'top-right', // Position of the toast notification
+                });
+            }
         }
     };
 
