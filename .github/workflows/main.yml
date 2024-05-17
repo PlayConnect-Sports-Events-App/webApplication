@@ -1,5 +1,10 @@
 name: React CI
 
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  SERVICE: react-app # Google Cloud Run service name
+  REGION: europe-west4
+
 on:
   push:
     branches: [ "main" ]
@@ -57,32 +62,27 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+      - name: Setup Cloud CLI
+        uses: google-github-actions/setup-gcloud@v0.2.0
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-      - name: Configure Docker to use gcloud
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: Authorize Docker push
         run: gcloud auth configure-docker europe-west4-docker.pkg.dev
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:latest,europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:${{ github.sha }}
+      - name: Build and Push Container
+        run: |
+          docker build -t europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }} ./frontend
+          docker push europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }}
       - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy react-app \
-            --image europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-docker-repo/react-app:latest \
-            --platform managed \
-            --region europe-west4 \
-            --allow-unauthenticated \
-            --service-account=lachezar@upheld-flow-423619-t0.iam.gserviceaccount.com \
-            --timeout=20m
-      - name: Get Service URL
-        run: |
-          SERVICE_URL=$(gcloud run services describe react-app --region europe-west4 --format "value(status.url)")
-          echo "Service URL: $SERVICE_URL"
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v0.4.0
+        with:
+          service: ${{ env.SERVICE }}
+          image: europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }}
+          region: ${{ env.REGION }}
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}
