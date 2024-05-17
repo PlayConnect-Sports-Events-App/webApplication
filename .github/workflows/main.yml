@@ -71,11 +71,12 @@ jobs:
         with:
           version: 'latest'
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: ${{ secrets.GCP_PROJECT }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Authenticate Docker to Artifact Registry
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" | gcloud auth activate-service-account --key-file=-
+          echo "${{ secrets.GCP_SA_KEY }}" > ${HOME}/gcloud-service-key.json
+          gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
           gcloud auth configure-docker europe-west4-docker.pkg.dev
 
       - name: Build and Push Docker image
