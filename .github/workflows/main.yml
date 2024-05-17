@@ -75,14 +75,13 @@ jobs:
         run: gcloud auth configure-docker europe-west4-docker.pkg.dev
       - name: Build and Push Container
         run: |
-          docker build -t europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }} ./frontend
-          docker push europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }}
-      - name: Deploy to Cloud Run
-        id: deploy
-        uses: google-github-actions/deploy-cloudrun@v0.4.0
-        with:
-          service: ${{ env.SERVICE }}
-          image: europe-west4-docker.pkg.dev/${{ env.PROJECT_ID }}/my-docker-repo/${{ env.SERVICE }}:${{ github.sha }}
-          region: ${{ env.REGION }}
-      - name: Show Output
-        run: echo ${{ steps.deploy.outputs.url }}
+          gcloud run deploy ${ env.SERVICE } \
+            --image europe-west4-docker.pkg.dev/${ env.PROJECT_ID }/my-docker-repo/${ env.SERVICE }:${ github.sha } \
+            --platform managed \
+            --region ${ env.REGION } \
+            --allow-unauthenticated \
+            --timeout=900s
+      - name: Get Service URL
+        run: |
+          SERVICE_URL=$(gcloud run services describe ${ env.SERVICE } --region ${ env.REGION } --format "value(status.url)")
+          echo "Service URL: $SERVICE_URL"
