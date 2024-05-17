@@ -72,11 +72,17 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:latest,europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:${{ github.sha }}
+          tags: europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-docker-repo/react-app:latest,europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-docker-repo/react-app:${{ github.sha }}
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy react-app \
             --image europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-docker-repo/react-app:latest \
             --platform managed \
             --region europe-west4 \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --service-account=lachezar@upheld-flow-423619-t0.iam.gserviceaccount.com \
+            --timeout=20m
+      - name: Get Service URL
+        run: |
+          SERVICE_URL=$(gcloud run services describe react-app --region europe-west4 --format "value(status.url)")
+          echo "Service URL: $SERVICE_URL"
