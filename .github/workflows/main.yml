@@ -78,7 +78,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t europe-west4-docker.pkg.dev/upheld-flow-423619-t0/my-docker-repo/react-app:${{ github.sha }} .
+          docker build -t europe-west4-docker.pkg.dev/upheld-flow-423619-t0/my-docker-repo/react-app:${{ github.sha }} ./frontend
 
       - name: Push Docker image to Google Container Registry
         run: |
