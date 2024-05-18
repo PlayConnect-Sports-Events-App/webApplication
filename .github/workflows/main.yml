@@ -72,14 +72,17 @@ jobs:
       - name: Configure Docker to use gcloud
         run: gcloud auth configure-docker europe-west4-docker.pkg.dev
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:latest,europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:${{ github.sha }}
+        run: |
+          docker buildx create --use
+          docker buildx build --platform linux/amd64 \
+            --tag europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:latest \
+            --tag europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:${{ github.sha }} \
+            --push \
+            ./frontend
       - name: List Docker Images
         run: docker images
+      - name: Show Docker Build Logs
+        run: docker logs $(docker ps -q -l)
 
   deploy:
     needs: docker-publish
