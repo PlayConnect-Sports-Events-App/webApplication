@@ -61,21 +61,16 @@ jobs:
   docker-publish:
     needs: build-and-test
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-
       - name: Configure Docker to use gcloud
         run: gcloud auth configure-docker europe-west4-docker.pkg.dev
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -83,17 +78,17 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:latest,europe-west4-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/my-docker-repo/react-app:${{ github.sha }}
+      - name: List Docker Images
+        run: docker images
 
   deploy:
     needs: docker-publish
     runs-on: ubuntu-latest
-
     steps:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE }} \
@@ -101,3 +96,8 @@ jobs:
             --platform managed \
             --region ${{ env.REGION }} \
             --allow-unauthenticated
+      - name: List Cloud Run Services
+        run: gcloud run services list --platform managed --region ${{ env.REGION }}
+      - name: Get Cloud Run Logs
+        run: |
+          gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=${{ env.SERVICE }}" --limit 10 --format "json"
