@@ -53,7 +53,7 @@ function ProfilePage() {
     }
     
     try {
-      const response = await axios.put(`http://localhost:8080/api/user/${user.id}`, updateUser, {
+      const response = await axios.put(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/user/${user.id}`, updateUser, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -90,7 +90,7 @@ function ProfilePage() {
   // Function to delete user account
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/user/${user.id}`, {
+      const response = await axios.delete(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/user/${user.id}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -125,7 +125,7 @@ function ProfilePage() {
     if (userEmail && authToken) {
       const fetchUserInfo = async () => {
         try {
-          const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
+          const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/user/email/${userEmail}`, {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },

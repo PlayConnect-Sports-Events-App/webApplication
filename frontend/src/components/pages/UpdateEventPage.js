@@ -90,7 +90,7 @@ export default function UpdateEventPage() {
     useEffect(() => {
         const fetchEventDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/event/${eventId}`);
+                const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/event/${eventId}`);
                 const eventData = response.data;
                 setEvent(eventData); // Assuming you still want to keep the whole event object for any reason
                 setTitle(eventData.title);
@@ -126,7 +126,7 @@ export default function UpdateEventPage() {
         console.log(eventData);
 
         try {
-            const response = await axios.put(`http://localhost:8080/api/event/${eventId}`, eventData, {
+            const response = await axios.put(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/event/${eventId}`, eventData, {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },
@@ -159,7 +159,7 @@ export default function UpdateEventPage() {
     // Function to delete event
     const deleteEvent = async () => {
         try {
-            const response = await axios.delete(`http://localhost:8080/api/event/${eventId}`, {
+            const response = await axios.delete(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/event/${eventId}`, {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },

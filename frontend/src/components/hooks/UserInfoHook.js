@@ -11,7 +11,7 @@ const useUserInfo = (userEmail, authToken) => {
             setLoading(true);
             const fetchUserInfo = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
+                    const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/user/email/${userEmail}`, {
                         headers: {
                             Authorization: `Bearer ${authToken}`,
                         },

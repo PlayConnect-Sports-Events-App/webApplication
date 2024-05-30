@@ -53,7 +53,7 @@ function CommentSection({comments, user, eventId}) {
         // Fetch user info by ID
         const fetchUserById = async (userId) => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/${userId}/common`);
+                const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/user/${userId}/common`);
                 console.log(`User info for user ID ${userId}:`, response.data);
                 return response.data;
             } catch (error) {
@@ -108,7 +108,7 @@ function CommentSection({comments, user, eventId}) {
         };
 
         try {
-            const response = await axios.post('http://localhost:8080/api/comment', newCommentData,{
+            const response = await axios.post('https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/comment', newCommentData,{
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },
@@ -158,7 +158,7 @@ function CommentSection({comments, user, eventId}) {
 
     const deleteComment = async (commentId) => {
         try {
-            await axios.delete(`http://localhost:8080/api/comment/${commentId}`, {
+            await axios.delete(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/comment/${commentId}`, {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },

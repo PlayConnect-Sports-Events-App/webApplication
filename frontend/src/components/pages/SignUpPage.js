@@ -52,7 +52,7 @@ export default function SignUpPage() {
 
         try {
             // Using Axios to send a POST request to your registration endpoint
-            const response = await axios.post('http://localhost:8080/api/user/auth/register', userData);
+            const response = await axios.post('https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/user/auth/register', userData);
             const {token} = response.data; // Assuming the response contains the JWT token directly
             login(token); // Update auth state with the received token
             navigate('/'); // Redirect to homepage

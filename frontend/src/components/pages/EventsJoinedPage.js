@@ -17,7 +17,7 @@ const EventsJoinedPage = () => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/event/user/${userInfo.id}`, {
+                const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/event/user/${userInfo.id}`, {
                     headers: {
                         Authorization: `Bearer ${authToken}`,
                     },

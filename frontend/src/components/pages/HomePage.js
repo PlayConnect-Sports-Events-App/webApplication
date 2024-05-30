@@ -32,7 +32,7 @@ const HomePage = () => {
     // Fetch all events initially and on reset
     const fetchAllEvents = useCallback(async (page = 0, size = 9) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/search?page=${page}&size=${size}`);
+            const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/search?page=${page}&size=${size}`);
             setEvents(response.data.content); // Assuming 'content' holds the array of events
             setTotalPages(response.data.totalPages);
             console.log(response.data);
@@ -57,7 +57,7 @@ const HomePage = () => {
                 const fetchEvents = async () => {
                     try {
                         // Determine the correct endpoint and parameters based on the provided searchParams
-                        let url = 'http://localhost:8080/api/search';
+                        let url = 'https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/search';
                         if (searchParams.location) {
                             url += `/location?location=${encodeURIComponent(searchParams.location)}`;
                         } else if (searchParams.sportType) {

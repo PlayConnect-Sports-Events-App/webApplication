@@ -72,7 +72,7 @@ export default function EventDetailsPage() {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/event/${eventId}`);
+        const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/event/${eventId}`);
         setEvent(response.data);
         console.log(response.data);
         // Set the number of participants
@@ -93,7 +93,7 @@ export default function EventDetailsPage() {
   // Fetch comments for the event
   const fetchEventComments = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/comment/${eventId}`);
+      const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/comment/${eventId}`);
       setComments(response.data);
       console.log(response.data);
     } catch (error) {
@@ -104,7 +104,7 @@ export default function EventDetailsPage() {
   // Function to join event
   const handleJoinEvent = async () => {
     try {
-      const response = await axios.post(`http://localhost:8080/api/event/join`,
+      const response = await axios.post(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/event/join`,
         {
           userId: userInfo?.id,
           eventId: eventId,
@@ -136,7 +136,7 @@ export default function EventDetailsPage() {
   // Function to leave event
   const handleLeaveEvent = async () => {
     try {
-      const response = await axios.post(`http://localhost:8080/api/event/leave`,
+      const response = await axios.post(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/event/leave`,
         {
           userId: userInfo?.id,
           eventId: eventId,

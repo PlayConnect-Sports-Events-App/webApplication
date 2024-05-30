@@ -77,7 +77,7 @@ export default function CreateEventPage() {
         if (userEmail && authToken) { // Check both userEmail and authToken are available
             const fetchUserInfo = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:8080/api/user/email/${userEmail}`, {
+                    const response = await axios.get(`https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/user/email/${userEmail}`, {
                         headers: {
                             Authorization: `Bearer ${authToken}`, // Include the authorization header
                         },
@@ -110,7 +110,7 @@ export default function CreateEventPage() {
         };
 
         try {
-            const response = await axios.post('http://localhost:8080/api/event', eventData, {
+            const response = await axios.post('https://api-gateway-xwjwz3lfdq-ez.a.run.app/api/event', eventData, {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },
