@@ -107,6 +107,7 @@ jobs:
           gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=${{ env.SERVICE }}" --limit 10 --format "json"
 
   zap_scan:
+    needs: deploy
     name: ZAP Scan
     runs-on: ubuntu-latest
     steps:
