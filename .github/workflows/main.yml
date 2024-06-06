@@ -1,9 +1,4 @@
-name: React CI
-
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT }} # Project ID from lachezar account
-  SERVICE: react-app # Google Cloud Run service name
-  REGION: europe-west4
+name: ZAP Scan CI
 
 on:
   push:
@@ -13,7 +8,7 @@ on:
 
 jobs:
   zap_scan:
-    needs: deploy
+    name: ZAP Scan
     runs-on: ubuntu-latest
     steps:
       - name: ZAP Scan
