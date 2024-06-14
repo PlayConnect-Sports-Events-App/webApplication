@@ -14,7 +14,7 @@ import {
     Heading,
     Text,
     useColorModeValue,
-    Link, FormErrorMessage,
+    Link, FormErrorMessage, Checkbox,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
@@ -28,6 +28,9 @@ export default function SignUpPage() {
 
     // Form errors
     const [errors, setErrors] = useState({});
+
+    // Checkbox state
+    const [termsAccepted, setTermsAccepted] = useState(false);
     
     // Credentials
     const [firstName, setFirstName] = useState('');
@@ -46,6 +49,12 @@ export default function SignUpPage() {
     // Function to handle registration form submission
     const handleRegister = async (e) => {
         e.preventDefault(); // Prevent form submission default behavior
+
+        // Check if terms and conditions are accepted
+        if (!termsAccepted) {
+            setErrors({ terms: "Please accept the terms and conditions" });
+            return;
+        }
 
         // Form data to be sent
         const userData = { firstName, lastName, email, password };
@@ -116,6 +125,14 @@ export default function SignUpPage() {
                                 </InputRightElement>
                             </InputGroup>
                             {errors.password && <FormErrorMessage>{errors.password}</FormErrorMessage>}
+                        </FormControl>
+                        <FormControl isInvalid={errors.terms}>
+                            <Checkbox
+                                isChecked={termsAccepted}
+                                onChange={(e) => setTermsAccepted(e.target.checked)}>
+                                Accept the Terms & Conditions
+                            </Checkbox>
+                            {errors.terms && <FormErrorMessage>{errors.terms}</FormErrorMessage>}
                         </FormControl>
                         <Stack spacing={10} pt={2}>
                             <Button
