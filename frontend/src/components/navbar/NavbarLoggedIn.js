@@ -122,7 +122,7 @@ export default function NavbarLoggedIn() {
                             minW={0}>
                             <Avatar
                                 size={'sm'}
-                                src={'https://source.unsplash.com/random?user'}
+                                src={`https://picsum.photos/seed/user/100`}
                             />
                         </MenuButton>
                         <MenuList alignItems={'center'}>
@@ -130,7 +130,7 @@ export default function NavbarLoggedIn() {
                             <Center>
                                 <Avatar
                                     size={'2xl'}
-                                    src={'https://source.unsplash.com/random?user'}
+                                    src={`https://picsum.photos/seed/user/200`}
                                 />
                             </Center>
                             <br />

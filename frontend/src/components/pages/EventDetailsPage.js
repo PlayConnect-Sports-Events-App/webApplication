@@ -50,9 +50,9 @@ export default function EventDetailsPage() {
   
   //Participant List - hardcoded for now
   const hardcodedParticipants = [
-    { avatarUrl: 'https://source.unsplash.com/random?john', firstName: 'John', lastName: 'Doe' },
-    { avatarUrl: 'https://source.unsplash.com/random?jane', firstName: 'Jane', lastName: 'Smith' },
-    { avatarUrl: 'https://source.unsplash.com/random?dan', firstName: 'Dan', lastName: 'Abramov'}
+    { avatarUrl: 'https://picsum.photos/seed/john/100', firstName: 'John', lastName: 'Doe' },
+    { avatarUrl: 'https://picsum.photos/seed/jane/100', firstName: 'Jane', lastName: 'Smith' },
+    { avatarUrl: 'https://picsum.photos/seed/dan/100', firstName: 'Dan', lastName: 'Abramov' }
     // Add more participants as needed
   ];
   
@@ -173,15 +173,13 @@ export default function EventDetailsPage() {
         py={{ base: 18, md: 24 }}>
         <Flex>
           <Image
-            rounded={'md'}
-            alt={'product image'}
-            src={
-              `https://source.unsplash.com/random?${event?.sportType}`
-            }
-            fit={'cover'}
-            align={'center'}
-            w={'100%'}
-            h={{ base: '100%', sm: '400px', lg: '500px' }}
+              rounded={'md'}
+              alt={'product image'}
+              src={`https://picsum.photos/seed/${event?.sportType}/800/600`}
+              fit={'cover'}
+              align={'center'}
+              w={'100%'}
+              h={{ base: '100%', sm: '400px', lg: '500px' }}
           />
         </Flex>
         <Stack spacing={{ base: 6, md: 10 }}>

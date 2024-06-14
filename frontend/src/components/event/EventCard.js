@@ -50,12 +50,12 @@ export default function EventCard({ id, eventId, title, description, eventDate, 
                 overflow={'hidden'}>
                 <Box h={'210px'} bg={'gray.100'} mt={-6} mx={-6} mb={6} pos={'relative'}>
                     <Image
-                        src={`https://source.unsplash.com/random?${sportType}`}
+                        src={`https://picsum.photos/seed/${sportType}/800/600`}
                         alt="Example"
-                        objectFit="cover" // This will ensure the image covers the area, but is cropped to maintain aspect ratio
-                        objectPosition="center center" // Adjust as needed to focus on a certain part of the image
-                        w="full" // Ensure the image width fills the container
-                        h="100%" // Ensure the image height fills the container
+                        objectFit="cover"
+                        objectPosition="center center"
+                        w="full"
+                        h="100%"
                     />
                 </Box>
                 <Stack>
