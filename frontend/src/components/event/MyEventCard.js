@@ -10,10 +10,13 @@
 
 import { IconClockHour3, IconMapPin, IconYoga } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
+import UnsplashImage from "../images/UnsplashImage";
+import {useState} from "react";
 
 
 export default function MyEventCard({ eventId, title, description, eventDate, eventTime, location, sportType }) {
   const navigate = useNavigate();
+  const [imageUrl, setImageUrl] = useState('');
 
   // Function to navigate to the event edit page and pass the event id as a parameter
   const navigateToEdit = () => {
@@ -54,14 +57,20 @@ export default function MyEventCard({ eventId, title, description, eventDate, ev
         p={6}
         overflow={'hidden'}>
         <Box h={'210px'} bg={'gray.100'} mt={-6} mx={-6} mb={6} pos={'relative'}>
-          <Image
-              src={`https://picsum.photos/seed/${sportType}/800/600`}
-              alt="Example"
-              objectFit="cover"
-              objectPosition="center center"
-              w="full"
-              h="100%"
-          />
+          <UnsplashImage query={sportType} onLoad={setImageUrl} />
+          {imageUrl && (
+              <Image
+                  src={imageUrl}
+                  alt="Event Image"
+                  objectFit="cover"
+                  width="100%"
+                  height="100%"
+                  position="absolute"
+                  top="0"
+                  left="0"
+              />
+          )}
+
         </Box>
         <Stack>
           <Heading

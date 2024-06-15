@@ -11,7 +11,7 @@
   SimpleGrid,
   StackDivider,
   useColorModeValue,
-  Badge,
+  Badge, Spinner,
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -22,8 +22,11 @@ import CommentList from '../comment/CommentList';
 import EventDetails from '../event/EventDetails';
 import { useToast } from '@chakra-ui/react';
 import useUserInfo from '../hooks/UserInfoHook';
+import UnsplashImage from "../images/UnsplashImage";
 
 export default function EventDetailsPage() {
+  const [imageUrl, setImageUrl] = useState('');
+  
   // User authentication
   const { userEmail, authToken } = useAuth();
   
@@ -172,15 +175,24 @@ export default function EventDetailsPage() {
         spacing={{ base: 8, md: 10 }}
         py={{ base: 18, md: 24 }}>
         <Flex>
-          <Image
-              rounded={'md'}
-              alt={'product image'}
-              src={`https://picsum.photos/seed/${event?.sportType}/800/600`}
-              fit={'cover'}
-              align={'center'}
-              w={'100%'}
-              h={{ base: '100%', sm: '400px', lg: '500px' }}
-          />
+          {event ? (
+              <>
+                <UnsplashImage query={event.sportType} onLoad={setImageUrl} />
+                {imageUrl && (
+                    <Image
+                        src={imageUrl}
+                        alt="Event Image"
+                        objectFit="cover"
+                        align="center"
+                        width="100%"
+                        height={{ base: '100%', sm: '400px', lg: '500px' }}
+                        borderRadius="md"
+                    />
+                )}
+              </>
+          ) : (
+              <Spinner size="xl" />
+          )}
         </Flex>
         <Stack spacing={{ base: 6, md: 10 }}>
           <Box as={'header'}>

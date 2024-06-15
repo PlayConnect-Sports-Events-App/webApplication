@@ -9,17 +9,20 @@
 } from '@chakra-ui/react'
 
 import {IconClockHour3, IconMapPin, IconYoga} from "@tabler/icons-react"
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import UnsplashImage from "../images/UnsplashImage";
+import {useState} from "react";
 
 
-export default function EventCard({ id, eventId, title, description, eventDate, eventTime, location, sportType }) {
+export default function EventCard({id, eventId, title, description, eventDate, eventTime, location, sportType}) {
     const navigate = useNavigate();
+    const [imageUrl, setImageUrl] = useState('');
 
     // Function to navigate to the event details page and pass the event id as a parameter
     const navigateToDetails = () => {
         navigate(`/event/${eventId}`);
     };
-    
+
     // Function to format the event date
     const formatDate = (date) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -36,7 +39,7 @@ export default function EventCard({ id, eventId, title, description, eventDate, 
         const formattedHour = ((h + 11) % 12 + 1); // Convert 24h to 12h format
         return `${formattedHour}:${m < 10 ? `0${m}` : m} ${ampm}`;
     };
-    
+
     return (
         <Center py={6}>
             <Box
@@ -49,14 +52,20 @@ export default function EventCard({ id, eventId, title, description, eventDate, 
                 p={6}
                 overflow={'hidden'}>
                 <Box h={'210px'} bg={'gray.100'} mt={-6} mx={-6} mb={6} pos={'relative'}>
-                    <Image
-                        src={`https://picsum.photos/seed/${sportType}/800/600`}
-                        alt="Example"
-                        objectFit="cover"
-                        objectPosition="center center"
-                        w="full"
-                        h="100%"
-                    />
+                    <UnsplashImage query={sportType} onLoad={setImageUrl} />
+                    {imageUrl && (
+                        <Image
+                            src={imageUrl}
+                            alt="Event Image"
+                            objectFit="cover"
+                            width="100%"
+                            height="100%"
+                            position="absolute"
+                            top="0"
+                            left="0"
+                        />
+                    )}
+
                 </Box>
                 <Stack>
                     <Heading
@@ -70,34 +79,34 @@ export default function EventCard({ id, eventId, title, description, eventDate, 
                 <Box>
                     <List spacing={2} marginTop={4}>
                         <ListItem>
-                            <ListIcon as={IconClockHour3} boxSize={6} color="green.500" />
+                            <ListIcon as={IconClockHour3} boxSize={6} color="green.500"/>
                             {formatDate(eventDate)} at {formatTime(eventTime)}
                         </ListItem>
                         <ListItem>
-                            <ListIcon as={IconMapPin} boxSize={6} color="green.500" />
+                            <ListIcon as={IconMapPin} boxSize={6} color="green.500"/>
                             {location}
                         </ListItem>
                         <ListItem>
-                            <ListIcon as={IconYoga} boxSize={6} color="green.500" />
+                            <ListIcon as={IconYoga} boxSize={6} color="green.500"/>
                             {sportType}
                         </ListItem>
                     </List>
                 </Box>
                 <Stack mt={4} direction={'row'} spacing={4}>
                     <Button
-                      mt={4}
-                      w={'full'}
-                      rounded={'xl'}
-                      bgGradient="linear(to-r, teal.300, green.400)"
-                      color="white"
-                      _hover={{
-                          bgGradient: "linear(to-r, teal.400, green.500)",
-                      }}
-                      _focus={{
-                          outline: "none",
-                          bgGradient: "linear(to-r, teal.400, green.500)",
-                      }}
-                      onClick={navigateToDetails}
+                        mt={4}
+                        w={'full'}
+                        rounded={'xl'}
+                        bgGradient="linear(to-r, teal.300, green.400)"
+                        color="white"
+                        _hover={{
+                            bgGradient: "linear(to-r, teal.400, green.500)",
+                        }}
+                        _focus={{
+                            outline: "none",
+                            bgGradient: "linear(to-r, teal.400, green.500)",
+                        }}
+                        onClick={navigateToDetails}
                     >
                         See Details
                     </Button>

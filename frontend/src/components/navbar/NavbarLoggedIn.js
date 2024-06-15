@@ -26,6 +26,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {IconLogout, IconUserCircle} from "@tabler/icons-react"
 import useUserInfo from "../hooks/UserInfoHook";
+import UnsplashImage from "../images/UnsplashImage";
 
 const NAV_ITEMS = [
     {
@@ -120,18 +121,16 @@ export default function NavbarLoggedIn() {
                             variant={'link'}
                             cursor={'pointer'}
                             minW={0}>
-                            <Avatar
-                                size={'sm'}
-                                src={`https://picsum.photos/seed/user/100`}
-                            />
+                            <Avatar size={'sm'}>
+                                <UnsplashImage query="user" alt="User Avatar" borderRadius="full" boxSize="100%" />
+                            </Avatar>
                         </MenuButton>
                         <MenuList alignItems={'center'}>
                             <br />
                             <Center>
-                                <Avatar
-                                    size={'2xl'}
-                                    src={`https://picsum.photos/seed/user/200`}
-                                />
+                                <Avatar size={'2xl'}>
+                                    <UnsplashImage query="user" alt="User Avatar" borderRadius="full" boxSize="100%" />
+                                </Avatar>
                             </Center>
                             <br />
                             <Center>
@@ -139,8 +138,8 @@ export default function NavbarLoggedIn() {
                             </Center>
                             <br />
                             <MenuDivider />
-                            <MenuItem icon={<IconUserCircle/>} onClick={() => navigate('/profile')}>Account</MenuItem>
-                            <MenuItem icon={<IconLogout/>} onClick={handleLogout}>Logout</MenuItem>
+                            <MenuItem icon={<IconUserCircle />} onClick={() => navigate('/profile')}>Account</MenuItem>
+                            <MenuItem icon={<IconLogout />} onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>
                     </Menu>
                 </Stack>
